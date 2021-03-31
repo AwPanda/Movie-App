@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "movie-app-8bb1d": {
+      "hosting": {
+        "Movie-App": [
+          "movie-app-8bb1d"
+        ]
+      }
+    }
+  }
+}
