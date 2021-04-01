@@ -1,0 +1,33 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav" fixedInViewport
+        [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+        [mode]="(isHandset$ | async) ? 'over' : 'side'"
+        [opened]="(isHandset$ | async) === false">
+        <div class="img-wrapper">
+          <img src="../../assets/logo.svg" alt="Deal Finder Logo" class="logo-image">
+        </div>
+      <mat-nav-list>
+        <a mat-list-item [routerLink]="['/deal']" routerLinkActive="router-link-active" ><mat-icon>gamepad</mat-icon>Search Deals</a>
+        <a mat-list-item *ngIf="authenticated" [routerLink]="['/favourites']" routerLinkActive="router-link-active" ><mat-icon>favorite</mat-icon>Favourites</a>
+        <a mat-list-item *ngIf="!authenticated" [routerLink]="['/login']" routerLinkActive="router-link-active"><mat-icon>login</mat-icon>Login</a>
+        <a mat-list-item *ngIf="authenticated" (click)="onLogout()" [routerLink]="['/register']" routerLinkActive="router-link-active"><mat-icon>cancel</mat-icon>Logout</a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <mat-toolbar color="primary">
+        <button
+          type="button"
+          aria-label="Toggle sidenav"
+          mat-icon-button
+          (click)="drawer.toggle()"
+          *ngIf="isHandset$ | async">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+        <span>GameApp</span>
+      </mat-toolbar>
+      <div class="wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+  
