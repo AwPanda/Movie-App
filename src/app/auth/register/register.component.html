@@ -17,6 +17,14 @@
         </mat-error>
     </mat-form-field>
     <br>
+
+    <mat-form-field appearance="standard">
+        <mat-label>Confirm Password</mat-label>
+        <input type="password" matInput autocomplete="off" formControlName="confirmPassword">
+        <mat-error>
+            {{ getPasswordError() }}
+        </mat-error>
+    </mat-form-field>
     <br>
     
     <button mat-flat-button color="primary" type="submit" [disabled]="!registerForm.valid">Register</button>
@@ -29,5 +37,5 @@
 
 <br>
 <br>
-<p>Already got an account? Login <a [routerLink]="['/login']" routerLinkActive="router-link-active">here</a></p>
+<p>Already got an account? Login <a [routerLink]="['/auth/login']" routerLinkActive="router-link-active">here</a></p>
 <app-loading-spinner *ngIf="loading"></app-loading-spinner>

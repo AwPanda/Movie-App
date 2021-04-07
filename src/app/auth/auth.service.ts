@@ -107,6 +107,7 @@ export class AuthService {
     } = JSON.parse(localStorage.getItem('userData'));
 
     if(!userData){
+      console.log("test");
       return;
     }
 

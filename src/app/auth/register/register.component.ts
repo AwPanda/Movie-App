@@ -17,7 +17,8 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     this.registerForm = new FormGroup({
       'email': new FormControl(null, [Validators.required, Validators.email]),
-      'password': new FormControl(null, [Validators.required, Validators.minLength(6)])
+      'password': new FormControl(null, [Validators.required, Validators.minLength(6)]),
+      'confirmPassword': new FormControl(null)
     })
   }
 
@@ -25,15 +26,26 @@ export class RegisterComponent implements OnInit {
     this.loading = true;
     const email = this.registerForm.value.email;
     const password = this.registerForm.value.password;
+    const confirmPass = this.registerForm.value.confirmPassword;
 
-    this.auth.signUp(email, password).subscribe((response) => {
-      console.log(response);
+    if(password != confirmPass)
+    {
+      this.error = "Passwords are not matching!";
       this.loading = false;
-    }, (error) => {
-      this.error = error;
-      this.loading = false;
-    })
-  }
+    }
+    else
+    {
+      this.auth.signUp(email, password).subscribe((response) => {
+        console.log(response);
+        this.loading = false;
+      }, (error) => {
+        this.error = error;
+        this.loading = false;
+      })
+    }
+    }
+
+
 
   getEmailError(): string {
     if(this.registerForm.get('email')?.errors?.required) {
