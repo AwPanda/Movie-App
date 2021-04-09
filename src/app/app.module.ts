@@ -16,12 +16,22 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthModule } from './auth/auth.module';
 import { MatButtonModule } from '@angular/material/button';
+import { MovieComponent } from './movie/movie.component';
+import { MovieDetailsComponent } from './movie/movie-details/movie-details.component';
+import { MovieSearchComponent } from './movie/movie-search/movie-search.component';
+import { MovieListComponent } from './movie/movie-list/movie-list.component';
+import { SubscriptionComponent } from './subscription/subscription.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
+    MovieComponent,
+    MovieDetailsComponent,
+    MovieSearchComponent,
+    MovieListComponent,
+    SubscriptionComponent,
   ],
   imports: [
     BrowserModule,
