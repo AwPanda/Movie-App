@@ -7,7 +7,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { SharedModule } from '../shared/shared.module';
+
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -22,7 +24,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSnackBarModule
   ],
   exports: [RouterModule]
 })

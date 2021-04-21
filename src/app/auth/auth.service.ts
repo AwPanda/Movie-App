@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment.prod';
 import { User } from './user.model';
@@ -20,12 +21,11 @@ interface AuthResponseData {
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private snackBar: MatSnackBar) { }
 
   user = new BehaviorSubject<User>(null);
   private tokenExpirationTime: any;
-
-  //AIzaSyBcQAaIcyanab6MT9ghRBPWD9ShuUKA3Kk
+  
 
   signUp(email: string, password: string) {
     return this.http.post<AuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`, {
@@ -51,7 +51,7 @@ export class AuthService {
 
         return throwError(errorMessage);
       }),
-      tap(response => {this.handleAuth(response)})
+      tap(response => {this.handleAuth(response, "You have succesfully signed up and automatically been logged in")})
     )
   }
 
@@ -80,22 +80,28 @@ export class AuthService {
 
         return throwError(errorMessage);
       }),
-      tap(response => {this.handleAuth(response)})
+      tap(response => {this.handleAuth(response, "You have succesfully signed in and automatically been logged in")})
     )
   }
 
-  handleAuth(response: AuthResponseData) {
+  handleAuth(response: AuthResponseData, typeOfResponse: string) {
     const expirationDate = new Date(new Date().getTime() + +response.expiresIn * 1000);
     const user = new User(response.email, response.localId, response.idToken, expirationDate);
 
     // Ommit the new user
     this.user.next(user);
-    this.router.navigate(['/deal']);
+    this.router.navigate(['/movies']).then((navigated: boolean) => {
 
-    // Store user in localStorage
-    localStorage.setItem('userData', JSON.stringify(user));
+   
+        // Store user in localStorage
+        localStorage.setItem('userData', JSON.stringify(user));
+        this.snackBar.open(typeOfResponse, "", {duration: 7000})
 
-    this.autoLogout(+response.expiresIn * 1000);
+        this.autoLogout(+response.expiresIn * 1000);
+      
+    });
+
+
   }
 
   autoLogin() {
@@ -107,7 +113,6 @@ export class AuthService {
     } = JSON.parse(localStorage.getItem('userData'));
 
     if(!userData){
-      console.log("test");
       return;
     }
 
@@ -116,6 +121,7 @@ export class AuthService {
       const expirationDuration = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
       this.autoLogout(expirationDuration);
       this.user.next(loadedUser);
+      this.snackBar.open('You have been automatically logged in', "", {duration: 7000})
     }
   }
 
@@ -128,7 +134,14 @@ export class AuthService {
 
   logout() {
     this.user.next(null);
-    this.router.navigate(['/deal']);
-    localStorage.removeItem('userData');
+    this.router.navigate(['/movies']).then((navigated: boolean) => {
+
+    
+        this.snackBar.open('You have been logged out!', "", {duration: 7000})
+        localStorage.removeItem('userData');
+      
+
+
+    });
   }
 }

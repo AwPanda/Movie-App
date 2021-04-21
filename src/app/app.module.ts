@@ -11,27 +11,20 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 
+
 import { MatGridListModule } from '@angular/material/grid-list';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AuthModule } from './auth/auth.module';
 import { MatButtonModule } from '@angular/material/button';
-import { MovieComponent } from './movie/movie.component';
-import { MovieDetailsComponent } from './movie/movie-details/movie-details.component';
-import { MovieSearchComponent } from './movie/movie-search/movie-search.component';
-import { MovieListComponent } from './movie/movie-list/movie-list.component';
-import { SubscriptionComponent } from './subscription/subscription.component';
+import { Error404Component } from './error404/error404.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
-    MovieComponent,
-    MovieDetailsComponent,
-    MovieSearchComponent,
-    MovieListComponent,
-    SubscriptionComponent,
+    Error404Component,
   ],
   imports: [
     BrowserModule,
@@ -40,12 +33,12 @@ import { SubscriptionComponent } from './subscription/subscription.component';
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,
+    MatSnackBarModule,
     MatIconModule,
     MatListModule,
     HttpClientModule,
     ReactiveFormsModule,
     MatGridListModule,
-    AuthModule,
     AppRoutingModule,
 
   ],
