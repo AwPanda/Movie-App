@@ -3,7 +3,9 @@
         {{sub.name}}
     </div>
     <div>
+        <img src={{sub.img}} width="120px" height="120px" alt="logo">
+    </div>
+    <div>
         <input type="checkbox" [checked]="sub.subscribed" (change)="subChange($event)">
-
     </div>
 </div>

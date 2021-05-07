@@ -13,6 +13,8 @@ export class SubscriptionItemComponent implements OnInit {
   constructor(private subService: SubscriptionService) { }
 
   ngOnInit(): void {
+
+    console.log(this.sub)
   }
 
   subChange(event: any) {

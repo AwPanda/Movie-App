@@ -18,14 +18,13 @@ export class SubscriptionComponent implements OnInit {
 
     this.subscriptions = this.subService.getSubs();
     this.subService.newSubscriptionSubject.subscribe((subs) => {
-      console.log(subs);
       this.subscriptions = subs;
+  
+
     })
+    console.log(this.subscriptions);
 
   }
 
-  ngOnDestry() {
-    this.subService.newSubscriptionSubject.unsubscribe();
-  }
 
 }

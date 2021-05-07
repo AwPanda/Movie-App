@@ -11,45 +11,67 @@ import { Sub } from './subscription.model';
 })
 export class SubscriptionService {
   
-  subs: Sub[] = [
-    new Sub(9, "Amazon Prime Video", false),
-    new Sub(39, "Now TV", false),
-    new Sub(29, "Sky Go", false),
-    new Sub(337, "Disney Plus", false),
-    new Sub(1, "Netflix", false),
+  initialSubs: Sub[] = [
+    new Sub(10, "Amazon Prime Video", false, './assets/amazon.png'),
+    new Sub(39, "Now TV", false, './assets/now.jpg'),
+    new Sub(29, "Sky Go", false, './assets/sky-go.png'),
+    new Sub(337, "Disney Plus", false, './assets/disney-plus.jpg'),
+    new Sub(8, "Netflix", false, './assets/netflix.jpg'),
   ]
 
-  newSubscriptionSubject = new BehaviorSubject<Sub[]>(this.subs);
+  userSubs: Sub[] = this.initialSubs.slice();
+
+
+
+  newSubscriptionSubject = new BehaviorSubject<Sub[]>(this.initialSubs.slice());
   user: User;
 
   // Setup static subscriptions - The false will change depending on the logged in users current setup
 
   constructor(private http: HttpClient, private auth: AuthService) { 
+    console.log("test")
     this.auth.user.subscribe(user => {
       this.user = user;
-  
+      if(user === null) {
+        this.userSubs = this.initialSubs.slice();
+        this.newSubscriptionSubject.next(this.userSubs.slice());
+      } else {
+        this.getUserSubs()?.subscribe(resp => {
+          if(resp === null) {
+            this.newSubscriptionSubject.next(this.initialSubs.slice())
+          } 
+        })
+      }
+     
     })
 
-    this.getUserSubs()?.subscribe(resp => {
-      if(resp) {
-        this.newSubscriptionSubject.next(resp);
-      }
-    })
   }
 
   onStateChange(sub: Sub){
-    const index = this.subs.map(e => e.subId).indexOf(sub.subId);
-    this.subs[index].subscribed = sub.subscribed;
 
-    this.newSubscriptionSubject.next(this.subs.slice());
-    this.http.put(`https://movie-app-8bb1d-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${this.user.id}.json`, this.subs.slice()).subscribe();
+    const index = this.userSubs.map(e => e.subId).indexOf(sub.subId);
+    this.userSubs[index].subscribed = sub.subscribed;
+    
+    this.newSubscriptionSubject.next(this.userSubs.slice());
+    this.http.put(`https://movie-app-8bb1d-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${this.user.id}.json`, this.userSubs.slice(), 
+    {
+      params: { 
+        'auth': this.user.Token
+      }
+    }
+    ).subscribe();
   } 
 
   getUserSubs() {
     if(!this.user) {
       return;
     } 
-    return this.http.get<Sub[]>(`https://movie-app-8bb1d-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${this.user.id}.json`).pipe(
+    return this.http.get<Sub[]>(`https://movie-app-8bb1d-default-rtdb.europe-west1.firebasedatabase.app/subscriptions/${this.user.id}.json`, 
+    {
+      params: {
+        'auth': this.user.Token,
+      }
+    }).pipe(
       tap(response => {
         if(response) {
           this.handleUserSubs(response);
@@ -61,13 +83,13 @@ export class SubscriptionService {
   handleUserSubs(subs: Sub[]) {
 
     for(var sub of subs) {
-      const index = this.subs.map(e => e.subId).indexOf(sub.subId);
-      this.subs[index] = sub;
+      const index = this.userSubs.map(e => e.subId).indexOf(sub.subId);
+      this.userSubs[index] = sub;
     }
-    this.newSubscriptionSubject.next(this.subs.slice());
+    this.newSubscriptionSubject.next(this.userSubs.slice());
   }
 
   getSubs() {
-    return this.subs.slice();
+    return this.initialSubs.slice();
   }
 }

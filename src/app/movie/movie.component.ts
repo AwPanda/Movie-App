@@ -1,17 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import { SubscriptionService } from '../subscription/subscription.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Movie } from './movie.model';
+import { MovieService } from './movie.service';
 
 @Component({
   selector: 'app-movie',
   templateUrl: './movie.component.html',
   styleUrls: ['./movie.component.sass']
 })
-export class MovieComponent implements OnInit {
+export class MovieComponent implements OnInit, OnDestroy {
 
-  constructor(private subService: SubscriptionService) { }
+  movies: Movie[] = [];
+  constructor(private movie: MovieService) { }
 
   ngOnInit(): void {
 
+    console.log(this.movie.subs);
+    this.movie.getDiscoverMoviesSubs().subscribe(resp => {
+      console.log(resp);
+    })
+  }
+
+  ngOnDestroy(): void {
+    console.log("test exit")
   }
 
 }

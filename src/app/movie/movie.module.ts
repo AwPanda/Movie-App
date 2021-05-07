@@ -8,9 +8,11 @@ import { MovieListComponent } from './movie-list/movie-list.component';
 import { MovieSearchComponent } from './movie-search/movie-search.component';
 
 const routes: Routes = [
-  {path: '', pathMatch: "full", component: MovieComponent},
-  {path: 'search', component: MovieListComponent},
-  {path: 'search/:id', component: MovieDetailsComponent}
+  {path: '', children: [  
+    {path: ':title', component: MovieListComponent},
+    {path: ':title/:id', component: MovieDetailsComponent}
+  ], 
+  component: MovieComponent},
 ];
 
 @NgModule({
