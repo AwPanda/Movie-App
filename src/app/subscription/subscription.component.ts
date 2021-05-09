@@ -15,16 +15,13 @@ export class SubscriptionComponent implements OnInit {
   constructor(private subService: SubscriptionService) { }
 
   ngOnInit(): void {
-
-    this.subscriptions = this.subService.getSubs();
     this.subService.newSubscriptionSubject.subscribe((subs) => {
       this.subscriptions = subs;
-  
-
     })
-    console.log(this.subscriptions);
 
   }
+
+ 
 
 
 }
