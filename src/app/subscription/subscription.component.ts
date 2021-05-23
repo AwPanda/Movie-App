@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Sub } from './subscription.model';
 import { SubscriptionService } from './subscription.service';
 
@@ -7,21 +8,22 @@ import { SubscriptionService } from './subscription.service';
   templateUrl: './subscription.component.html',
   styleUrls: ['./subscription.component.sass'],
 })
-export class SubscriptionComponent implements OnInit {
+export class SubscriptionComponent implements OnInit, OnDestroy {
 
 
-  subscriptions: Sub[] = [];
+  userSubs: Sub[] = [];
+  sub: Subscription;
 
   constructor(private subService: SubscriptionService) { }
 
   ngOnInit(): void {
-    this.subService.newSubscriptionSubject.subscribe((subs) => {
-      this.subscriptions = subs;
+    this.sub = this.subService.newSubscriptionSubject.subscribe((subs) => {
+      this.userSubs = subs.slice();
     })
-
+  
   }
 
- 
-
-
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
 }

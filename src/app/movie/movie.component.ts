@@ -1,4 +1,8 @@
+import { ThisReceiver } from '@angular/compiler';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
+import { User } from '../auth/user.model';
 import { Sub } from '../subscription/subscription.model';
 import { SubscriptionService } from '../subscription/subscription.service';
 import { Movie } from './movie.model';
@@ -9,26 +13,18 @@ import { MovieService } from './movie.service';
   templateUrl: './movie.component.html',
   styleUrls: ['./movie.component.sass']
 })
-export class MovieComponent implements OnInit, OnDestroy {
+export class MovieComponent implements OnInit {
 
   movies: Movie[] = [];
-  constructor(private movie: MovieService, private sub: SubscriptionService) { }
+  user: User;
+  constructor(private movie: MovieService, private sub: SubscriptionService, private authService: AuthService) { }
 
   ngOnInit(): void {
-    // console.log("test");
-    // this.sub.newSubscriptionSubject.subscribe(resp => {
-    //   console.log(resp);
-    //   this.movie.getDiscoverMoviesSubs(resp).subscribe(resp => {
-    //     console.log(resp);
-    //     this.movies = resp
-    //   })
-    // })
-    console.log("test");
- 
+    this.authService.user.subscribe(resp => {
+      console.log(resp);
+      this.user = resp;
+    })
   }
 
-  ngOnDestroy(): void {
-    console.log("test exit")
-  }
-
+  
 }

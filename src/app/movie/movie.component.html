@@ -1,6 +1,8 @@
 
-    <app-movie-list></app-movie-list>
+<div>
+    <app-movie-search></app-movie-search>
+    <h1 *ngIf="!user">Trending/Upcoming Movies</h1>
+    <h1 *ngIf="user">Trending/Upcoming Movies recommended for you!</h1>
+    <app-movie-list-home></app-movie-list-home>
+</div>
 
-
-
-<router-outlet></router-outlet>
