@@ -46,6 +46,7 @@ export class MovieService {
   }
 
   getDiscoverMovies(): Observable<any> {
+    
     console.log(this.user)
 
     return this.http.get<Movie[]>(`${environment.baseURL}discover/movie?api_key=${environment.movieAPIKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&watch_region=GB&with_watch_monetization_types=flatrate`);
@@ -53,7 +54,7 @@ export class MovieService {
 
   getUserDiscoverMovies(Subs: Sub[]): Observable<any> {
     
-    console.log(Subs)
+    console.log(this.subService.userSubs);
 
     let providerIds = "";
 
