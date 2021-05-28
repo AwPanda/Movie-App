@@ -6,7 +6,7 @@ import { User } from '../auth/user.model';
 import { Sub } from '../subscription/subscription.model';
 import { environment } from 'src/environments/environment.prod';
 import { Movie, MovieAPI } from './movie.model';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { SubscriptionService } from '../subscription/subscription.service';
 
 interface MovieResponse {
@@ -46,20 +46,34 @@ export class MovieService {
   }
 
   getDiscoverMovies(): Observable<any> {
-    
-    console.log(this.user)
-
-    return this.http.get<Movie[]>(`${environment.baseURL}discover/movie?api_key=${environment.movieAPIKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&watch_region=GB&with_watch_monetization_types=flatrate`);
+    return this.http.get<MovieResponse>(`${environment.baseURL}discover/movie?api_key=${environment.movieAPIKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&watch_region=GB&with_watch_monetization_types=flatrate`).pipe(
+      map(resp => {
+        console.log(resp)
+        return new MovieAPI(resp.results.map(item => {
+          return new Movie(item.id, item.backdrop_path, item.overview, item.original_title, item.title, item.release_date, item.vote_average)
+        }), resp.page, resp.total_pages, resp.total_results)
+      })
+    );
   }
 
-  getUserDiscoverMovies(Subs: Sub[]): Observable<any> {
-    
-    console.log(this.subService.userSubs);
+  getAllSubscribedSubscriptions(Subs: Sub[]): string {
 
-    let providerIds = "";
+    if(Subs === null)
+      return "";
 
-    return this.http.get<Movie[]>(`${environment.baseURL}discover/movie?api_key=${environment.movieAPIKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_providers=${providerIds}&watch_region=GB&with_watch_monetization_types=flatrate`);
+    console.log(Subs)
+    const subscribedSubs = Subs.filter(e => !e.subscribed).map(e => e.subId);
 
+    console.log(subscribedSubs)
+  
+  }
+  getUserDiscoverMovies(providerIds: string): Observable<any> { 
+    return this.http.get<MovieResponse>(`${environment.baseURL}discover/movie?api_key=${environment.movieAPIKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_providers=${providerIds}&watch_region=GB&with_watch_monetization_types=flatrate`).pipe( map(resp => {
+        return new MovieAPI(resp.results.map(item => {
+          return new Movie(item.id, item.backdrop_path, item.overview, item.original_title, item.title, item.release_date, item.vote_average)
+        }), resp.page, resp.total_pages, resp.total_results)
+      })
+    );
   }
 
   getMovie(id: string): Observable<any> {

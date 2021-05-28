@@ -1,36 +1,22 @@
-$color1: #ffffff
+.lds-dual-ring
+  display: inline-block
+  width: 80px
+  height: 80px
 
-.lds-facebook 
-	display: inline-block
-	position: relative
-	width: 80px
-	height: 80px
-	div 
-		display: inline-block
-		position: absolute
-		left: 8px
-		width: 16px
-		background: $color1
-		animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite
-		&:nth-child(1) 
-			left: 8px
-			animation-delay: -0.24s
-		
-		&:nth-child(2) 
-			left: 32px
-			animation-delay: -0.12s
-		
-		&:nth-child(3) 
-			left: 56px
-			animation-delay: 0
-		
-	
+  &:after
+    content: " "
+    display: block
+    width: 64px
+    height: 64px
+    margin: 8px
+    border-radius: 50%
+    border: 6px solid #fff
+    border-color: #fff transparent #fff transparent
+    animation: lds-dual-ring 1.2s linear infinite
 
-keyframes lds-facebook 
-	top: 8px
-	height: 64px
+@keyframes lds-dual-ring
+  0%
+    transform: rotate(0deg)
 
- 
-	top: 24px
-	height: 32px
-
+  100%
+    transform: rotate(360deg)

@@ -4,9 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
+import { User } from 'src/app/auth/user.model';
 import { Sub } from 'src/app/subscription/subscription.model';
 import { SubscriptionService } from 'src/app/subscription/subscription.service';
-import { Movie } from '../movie.model';
+import { Movie, MovieAPI } from '../movie.model';
 import { MovieService } from '../movie.service';
 
 @Component({
@@ -14,9 +15,9 @@ import { MovieService } from '../movie.service';
   templateUrl: './movie-list-home.component.html',
   styleUrls: ['./movie-list-home.component.sass']
 })
-export class MovieListHomeComponent implements OnInit, OnDestroy {
+export class MovieListHomeComponent implements OnInit {
 
-  movies: Movie[];
+  movies: MovieAPI = new MovieAPI([], 0, 0, 0);
   searching = false;
   tableSource: MatTableDataSource<any>;
   userSub: Subscription;
@@ -25,31 +26,51 @@ export class MovieListHomeComponent implements OnInit, OnDestroy {
   constructor(private movieService: MovieService, private authService: AuthService, private subService: SubscriptionService, private router: Router) { }
 
   ngOnInit(): void {
-    this.userSub = this.subService.newSubscriptionSubject.subscribe(resp => {
-      this.userCurrentSubs = resp;
-      this.getUserMovies();
+    console.log(this.movies.movies)
+    this.userSub = this.authService.user.subscribe(user => {
+      if(user === null) {
+        this.getMovies()
+      } else {
+        this.getUserMovies();
+      }
     })
+  
   }
 
   
   getFullDetails(id: string) {
     console.log(this.router.url);
     
-    this.router.navigate(['/movies/search/', id]);
+    this.router.navigate(['/movies/details/', id]);
+  }
+
+  getMovies() {
+    this.searching = true;
+    console.log(this.userCurrentSubs);
+    this.movieService.getDiscoverMovies().subscribe((response: MovieAPI) => {
+      console.log(response.movies);
+      this.movies = response;
+      if(response.total_results > 0) {
+        this.tableSource = new MatTableDataSource(response.movies)
+      }
+      this.searching = false;
+
+    })
   }
 
   getUserMovies() {
     this.searching = true;
-    console.log(this.userCurrentSubs);
-    this.movieService.getUserDiscoverMovies(this.userCurrentSubs).subscribe(response => {
-    
-      this.tableSource = new MatTableDataSource(response.results)
+    this.userCurrentSubs = this.su
+    this.movieService.getUserDiscoverMovies(this.userCurrentSubs).subscribe((response: MovieAPI) => {
+      console.log(response.movies);
+      this.movies = response;
+      if(response.total_results > 0) {
+        this.tableSource = new MatTableDataSource(response.movies)
+      }
       this.searching = false;
      
     })
   }
 
-  ngOnDestroy() {
-    this.userSub.unsubscribe();
-  }
+
 }

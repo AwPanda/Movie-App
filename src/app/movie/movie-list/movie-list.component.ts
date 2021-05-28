@@ -14,7 +14,7 @@ import { MovieService } from '../movie.service';
 })
 export class MovieListComponent implements OnInit, OnDestroy {
 
-  movies: Movie[];
+  movies: MovieAPI = new MovieAPI([], 0, 0, 0);
   userSub: Subscription;
   searching = false;
   tableSource: MatTableDataSource<any>;
@@ -47,11 +47,14 @@ export class MovieListComponent implements OnInit, OnDestroy {
   newSearch(searchTerm: string) {
     this.searching = true;
     this.movieService.searchMoviesByTitle(searchTerm).subscribe((response: MovieAPI) => {
+      console.log(response.movies)
+      this.movies = response;
 
       if(response.total_results > 0) {
         this.tableSource = new MatTableDataSource(response.movies)
-        this.searching = false;
       }
+      this.searching = false;
+
     })
   }
 

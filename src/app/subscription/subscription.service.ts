@@ -73,7 +73,9 @@ export class SubscriptionService {
           const index = this.userSubs.map(e => e.subId).indexOf(sub.subId);
           this.userSubs[index] = sub;
         }
+        console.log(this.userSubs.slice());
         this.newSubscriptionSubject.next(this.userSubs.slice());
+        console.log("test")
       } else {
         this.newSubscriptionSubject.next(this.initialSubs.slice());
       }

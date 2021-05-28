@@ -1,35 +1,46 @@
-<div class="mat-elevation-z8">
-    <mat-table [dataSource]="tableSource">
+<div *ngIf="searching">
+    <app-loading-spinner></app-loading-spinner>
+</div>
 
-        <!-- Header Row -->
-        <mat-header-row *matHeaderRowDef="tableHeader"></mat-header-row>
-        <mat-row *matRowDef="let myRowData; columns: tableHeader"></mat-row>
+<div *ngIf="movies !== undefined && movies.total_results == 0">
+    <h2>No movies found!</h2>
+</div>
 
-        <ng-container matColumnDef="title">
-            <mat-header-cell *matHeaderCellDef>Movie Title</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{ element.title }}</mat-cell>
-        </ng-container>
-        
-        <ng-container matColumnDef="overview">
-            <mat-header-cell *matHeaderCellDef>Movie Overview</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{ element.overview | trimString }}</mat-cell>
-        </ng-container>
-        
-        <ng-container matColumnDef="release_date">
-            <mat-header-cell *matHeaderCellDef>Movie Release Date</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{ element.release_date | date }}</mat-cell>
-        </ng-container>
-        
-        <ng-container matColumnDef="vote_average">
-            <mat-header-cell *matHeaderCellDef>Movie Vote Average</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{ element.vote_average }}</mat-cell>
-        </ng-container>
-
-            <!-- Get Details -->
-    <ng-container matColumnDef="details">
-        <mat-header-cell mat-header-cell *matHeaderCellDef></mat-header-cell>
-        <mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" (click)="getFullDetails(element.id)">Show Details</button> </mat-cell>
-      </ng-container>
-
-    </mat-table>
+<div *ngIf="movies !== undefined && movies.total_results > 0">
+    <div class="mat-elevation-z8">
+        <mat-table [dataSource]="tableSource">
+    
+            <!-- Header Row -->
+            <mat-header-row *matHeaderRowDef="tableHeader"></mat-header-row>
+            <mat-row *matRowDef="let myRowData; columns: tableHeader"></mat-row>
+    
+            <ng-container matColumnDef="title">
+                <mat-header-cell *matHeaderCellDef>Movie Title</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.title }}</mat-cell>
+            </ng-container>
+            
+            <ng-container matColumnDef="overview">
+                <mat-header-cell *matHeaderCellDef>Movie Overview</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.overview | trimString }}</mat-cell>
+            </ng-container>
+            
+            <ng-container matColumnDef="release_date">
+                <mat-header-cell *matHeaderCellDef>Movie Release Date</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.release_date | date }}</mat-cell>
+            </ng-container>
+            
+            <ng-container matColumnDef="vote_average">
+                <mat-header-cell *matHeaderCellDef>Movie Vote Average</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.vote_average }}</mat-cell>
+            </ng-container>
+    
+                <!-- Get Details -->
+        <ng-container matColumnDef="details">
+            <mat-header-cell mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" (click)="getFullDetails(element.id)">Show Details</button> </mat-cell>
+          </ng-container>
+    
+        </mat-table>
+    </div>
+    
 </div>
