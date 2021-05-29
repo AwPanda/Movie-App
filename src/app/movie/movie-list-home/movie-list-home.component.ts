@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { exhaustMap, map, take } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
 import { Sub } from 'src/app/subscription/subscription.model';
@@ -50,6 +50,7 @@ export class MovieListHomeComponent implements OnInit {
     this.movieService.getDiscoverMovies().subscribe((response: MovieAPI) => {
       console.log(response.movies);
       this.movies = response;
+
       if(response.total_results > 0) {
         this.tableSource = new MatTableDataSource(response.movies)
       }
@@ -60,17 +61,38 @@ export class MovieListHomeComponent implements OnInit {
 
   getUserMovies() {
     this.searching = true;
-    this.userCurrentSubs = this.su
-    this.movieService.getUserDiscoverMovies(this.userCurrentSubs).subscribe((response: MovieAPI) => {
-      console.log(response.movies);
-      this.movies = response;
-      if(response.total_results > 0) {
-        this.tableSource = new MatTableDataSource(response.movies)
+    this.subService.getUserSubs().subscribe((resp: any) => {
+      if(resp === null)
+      {
+        this.getMovies();
       }
-      this.searching = false;
-     
+      else{
+        let providerIds = this.getAllSubscribedSubscriptions(resp);
+        console.log(providerIds)
+        this.movieService.getUserDiscoverMovies(providerIds).subscribe((response: MovieAPI) => {
+          console.log(response.movies);
+          this.movies = response;
+          if(response.total_results > 0) {
+            this.tableSource = new MatTableDataSource(response.movies)
+          }
+          this.searching = false;
+          
+        })
+      }
     })
   }
 
+  getAllSubscribedSubscriptions(Subs: Sub[]): string {
 
+    if(Subs === null)
+      return "";
+
+    console.log(Subs)
+    const subscribedSubs = Subs.filter(e => e.subscribed).map(e => e.subId.toString()).join("|");
+
+    console.log(subscribedSubs)
+
+    return subscribedSubs;
+  
+  }
 }

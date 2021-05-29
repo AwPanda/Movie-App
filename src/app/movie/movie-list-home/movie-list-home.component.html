@@ -2,11 +2,11 @@
     <app-loading-spinner></app-loading-spinner>
 </div>
 
-<div *ngIf="movies.movies.length == 0 || movies.total_results == 0">
+<div *ngIf="(movies.movies.length == 0 || movies.total_results == 0) && !searching" >
     <h2>No movies found!</h2>
 </div>
 
-<div *ngIf="movies.movies.length > 0 || movies.total_results > 0">
+<div *ngIf="movies.total_results > 0">
     <div class="mat-elevation-z8">
         <mat-table [dataSource]="tableSource">
     
