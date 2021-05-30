@@ -6,6 +6,8 @@
     <h2>No movies found!</h2>
 </div>
 
+<h1>Searched movies that have "{{searchTitle}}" in the title</h1>
+
 <div *ngIf="movies.total_results > 0">
     <div class="mat-elevation-z8">
         <mat-table [dataSource]="tableSource">

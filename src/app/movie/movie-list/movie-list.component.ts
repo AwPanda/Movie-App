@@ -3,8 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { Sub } from 'src/app/subscription/subscription.model';
-import { Movie, MovieAPI } from '../movie.model';
+import { MovieAPI } from '../movie.model';
 import { MovieService } from '../movie.service';
 
 @Component({
@@ -19,29 +18,36 @@ export class MovieListComponent implements OnInit, OnDestroy {
   searching = false;
   tableSource: MatTableDataSource<any>;
   tableHeader = ['title', 'overview', 'release_date', 'vote_average', 'details'];
+  searchTitle = "";
 
 
   constructor(private movieService: MovieService, private authService: AuthService, private activatedRoute: ActivatedRoute, private router: Router) { }
 
 
   ngOnInit(): void {
-
-  let title = this.activatedRoute.snapshot.params['title'];
-
     this.userSub = this.authService.user.subscribe(user => {
-      if(!user) {
-        this.activatedRoute.params.subscribe((params: Params) => {
-          console.log(params['title'])
+      this.activatedRoute.params.subscribe((params: Params) => {
+        this.searchTitle = params['title'];
+        if(user !== null) {
+          this.newUserSearch(params['title']);
+        } else {
           this.newSearch(params['title']);
-        })
-      } else {
-     
-      }
- 
+        }
+      })
     })
+  }
 
-    console.log(title)
+  newUserSearch(searchTerm: string) {
+    this.searching = true;
+    this.movieService.searchMoviesByTitle(searchTerm).subscribe((response: MovieAPI) => {
+      console.log(response.movies)
+      this.movies = response;
 
+      if(response.total_results > 0) {
+        this.tableSource = new MatTableDataSource(response.movies)
+      }
+      this.searching = false;
+    })
   }
 
   newSearch(searchTerm: string) {
@@ -54,13 +60,10 @@ export class MovieListComponent implements OnInit, OnDestroy {
         this.tableSource = new MatTableDataSource(response.movies)
       }
       this.searching = false;
-
     })
   }
 
   getFullDetails(id: string) {
-    console.log(this.router.url);
-    
     this.router.navigate([this.router.url + "/", id]);
   }
 

@@ -87,11 +87,8 @@ export class MovieListHomeComponent implements OnInit {
     if(Subs === null)
       return "";
 
-    console.log(Subs)
+    // Convert subscription(where subscribed == true) array to pipe seperated string
     const subscribedSubs = Subs.filter(e => e.subscribed).map(e => e.subId.toString()).join("|");
-
-    console.log(subscribedSubs)
-
     return subscribedSubs;
   
   }
