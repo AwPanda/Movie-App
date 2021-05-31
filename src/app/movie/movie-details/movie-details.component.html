@@ -1,1 +1,26 @@
-<p>movie-details works!</p>
+<div *ngIf="movie">
+    <mat-card>
+        <mat-card-title>{{movie.title}}</mat-card-title>
+        <img mat-card-image src={{movieImg}} alt="movieImg">
+        <h3>Movie Overview</h3>
+        <mat-card-subtitle>{{movie.overview}}</mat-card-subtitle>
+        <h3>Movie Information</h3>
+        <mat-card-content>
+            <p>Vote Average: {{movie.vote_average}}</p>
+            <p>Release Date: {{movie.release_date}}</p>
+            <span><span>Genres: </span><span *ngFor="let genres of movie.genres">{{genres.name}}, </span></span>
+            <br>
+            <br>
+            <span><span>Watch Providers: </span><span *ngFor="let providers of watchProviders">{{providers.provider_name}}, </span></span>
+            <br>
+            <br>
+            <p>Budget: {{movie.budget | currency:'GBP'}}</p>
+
+
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="backClicked()">Go Back</button>
+        </mat-card-actions>
+    </mat-card>
+</div>
+

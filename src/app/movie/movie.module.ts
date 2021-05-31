@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MovieListHomeComponent } from './movie-list-home/movie-list-home.component';
+import { MatCardModule } from '@angular/material/card';
 
 const routes: Routes = [
   {path: '',  component: MovieComponent},
@@ -29,7 +30,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    MatCardModule
   ]
 })
 export class MovieModule { }

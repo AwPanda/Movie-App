@@ -1,4 +1,4 @@
 <h1>Select your subscribed streaming services to show specific movies</h1>
-<mat-card *ngFor="let sub of userSubs">
-    <app-subscription-item [sub]="sub"></app-subscription-item>
+<mat-card @fade @slide *ngFor="let sub of userSubs">
+    <app-subscription-item  [sub]="sub"></app-subscription-item>
 </mat-card>

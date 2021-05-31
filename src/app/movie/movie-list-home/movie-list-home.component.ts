@@ -1,19 +1,26 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, Subscription } from 'rxjs';
-import { exhaustMap, map, take } from 'rxjs/operators';
+import {  Router } from '@angular/router';
+import {  Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { User } from 'src/app/auth/user.model';
 import { Sub } from 'src/app/subscription/subscription.model';
 import { SubscriptionService } from 'src/app/subscription/subscription.service';
-import { Movie, MovieAPI } from '../movie.model';
+import { MovieAPI } from '../movie.model';
 import { MovieService } from '../movie.service';
+import { animate, style, state, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-movie-list-home',
   templateUrl: './movie-list-home.component.html',
-  styleUrls: ['./movie-list-home.component.sass']
+  styleUrls: ['./movie-list-home.component.sass'],
+  animations: [
+    trigger('fade', [
+      state('void', style({opacity: 0})),
+      transition('void <=> *', [
+        animate(500)
+      ])
+    ])
+  ]
 })
 export class MovieListHomeComponent implements OnInit {
 
@@ -70,7 +77,7 @@ export class MovieListHomeComponent implements OnInit {
         let providerIds = this.getAllSubscribedSubscriptions(resp);
         console.log(providerIds)
         this.movieService.getUserDiscoverMovies(providerIds).subscribe((response: MovieAPI) => {
-          console.log(response.movies);
+          console.log(response.movies.length);
           this.movies = response;
           if(response.total_results > 0) {
             this.tableSource = new MatTableDataSource(response.movies)

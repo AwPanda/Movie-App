@@ -6,7 +6,7 @@
     <h2>No movies found!</h2>
 </div>
 
-<div *ngIf="movies.total_results > 0">
+<div @fade *ngIf="movies.total_results > 0">
     <div class="mat-elevation-z8">
         <mat-table [dataSource]="tableSource">
     

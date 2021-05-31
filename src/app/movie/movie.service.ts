@@ -6,7 +6,7 @@ import { User } from '../auth/user.model';
 import { Sub } from '../subscription/subscription.model';
 import { environment } from 'src/environments/environment.prod';
 import { Movie, MovieAPI } from './movie.model';
-import { map, take } from 'rxjs/operators';
+import { exhaustMap, map, take, tap } from 'rxjs/operators';
 import { SubscriptionService } from '../subscription/subscription.service';
 
 interface MovieResponse {
@@ -14,6 +14,13 @@ interface MovieResponse {
   results: Movie[],
   total_pages: number,
   total_results: number
+}
+
+
+
+interface MovieProviderResponse {
+  id: number,
+  results: Array<any>
 }
 @Injectable({
   providedIn: 'root'
@@ -45,6 +52,27 @@ export class MovieService {
     }))
   }
 
+  // COULDN't GET THIS WORKIGN!!!
+  // searchMoviesByTitleUser(searchStr: string): Observable<any> {
+  //   return this.http.get<MovieResponse>(`${environment.baseURL}search/movie?api_key=${environment.movieAPIKey}&query=${searchStr}`).pipe(
+  //     map(resp => {
+  //       console.log(resp)
+  //       return new MovieAPI(resp.results.map(item => {
+  //         return new Movie(item.id, item.backdrop_path, item.overview, item.original_title, item.title, item.release_date, item.vote_average)
+  //       }), resp.page, resp.total_pages, resp.total_results)
+  //   }), exhaustMap(movies => {
+  //     console.log(movies.movies);
+  //     movies.movies.map(movie => {
+  //        return this.http.get<MovieProviderResponse>(`${environment.baseURL}/movie/${movie.id}/watch/providers?api_key=${environment.movieAPIKey}`).pipe(
+  //         tap(resp => {
+  //           console.log(resp);
+  //         })
+  //        )
+  //     })
+  //     return "test";
+  //   }))
+  // }
+
   getDiscoverMovies(): Observable<any> {
     return this.http.get<MovieResponse>(`${environment.baseURL}discover/movie?api_key=${environment.movieAPIKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&watch_region=GB&with_watch_monetization_types=flatrate`).pipe(
       map(resp => {
@@ -67,7 +95,7 @@ export class MovieService {
     );
   }
 
-  getMovie(id: string): Observable<any> {
+  getMovieFullDetails(id: string): Observable<any> {
     return this.http.get(`${environment.baseURL}movie/${id}?api_key=${environment.movieAPIKey}`);
   }
 
@@ -91,16 +119,8 @@ export class MovieService {
     return this.http.get(`${environment.baseURL}movie/${id}/recommendations?api_key=${environment.movieAPIKey}`);
   }
 
-  getPersonDetail(id: string): Observable<any> {
-    return this.http.get(`${environment.baseURL}person/${id}?api_key=${environment.movieAPIKey}`);
-  }
-
-  getPersonExternalData(id: string) {
-    return this.http.get(`${environment.baseURL}person/${id}/external_ids?api_key=${environment.movieAPIKey}`);
-  }
-
-  getPersonCast(id: string): Observable<any> {
-    return this.http.get(`${environment.baseURL}person/${id}/movie_credits?api_key=${environment.movieAPIKey}`);
+  getMovieWatchProviders(id: string): Observable<any> {
+    return this.http.get(`${environment.baseURL}movie/${id}/watch/providers?api_key=${environment.movieAPIKey}`);
   }
 
   
