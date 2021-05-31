@@ -7,8 +7,9 @@
 </div>
 
 <h1>Searched movies that have "{{searchTitle}}" in the title</h1>
+<a mat-button [routerLink]="['/movies']" color="primary">Search again</a>
 
-<div *ngIf="movies.total_results > 0">
+<div @fade *ngIf="movies.total_results > 0">
     <div class="mat-elevation-z8">
         <mat-table [dataSource]="tableSource">
     
